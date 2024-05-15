@@ -1,0 +1,5 @@
+[all:vars]
+asnible_become=yes
+ansible_become_pass=Student1
+[demo]
+student@192.168.0.117

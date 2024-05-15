@@ -1,0 +1,27 @@
+---
+- name: Configure iptables to controll SHH and ping base on the host lists
+  hosts: demo
+  become: yes
+  vars:
+    allowed_ips:
+      - 192.168.0.10
+
+  tasks:
+
+    - name: Allow all incoming trafic from listed addresses
+      ansible.builtin.iptables:
+        chain: INPUT
+        source: "{{ item }}"
+        jump: ACCEPT
+        comment: "Allow all incomming trafic from listed addecess"
+      loop: "{{ allowed_ips }}"
+
+    - name: Drop all other incomming trafic
+      ansible.builtin.iptables:
+        chain: INPUT
+        jump: DROP
+        comment: "Drop all other incoming trafic for security reasons"
+
+    - name: Save the rules to iptables
+      ansible.builtin.shell: /sbin/iptables-save > /etc/iptables/rules.v4
+...

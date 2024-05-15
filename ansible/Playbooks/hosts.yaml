@@ -1,0 +1,19 @@
+---
+
+control:
+  hosts:
+    ubdesktop@ubuntu:
+                ansible_connection: local
+tank:
+  hosts:
+    student@192.168.0.21:
+  vars:
+    ansible_become: true
+    ansible_become_pass: Student1
+serve:
+  hosts:
+    student@192.168.0.111:
+  vars:
+    ansible_become: true
+    ansible_become_pass: Student1
+...
