@@ -1,0 +1,63 @@
+---
+- name: Configure iptables to control SSH and ping based on the host list
+  hosts: demo
+  become: yes
+  vars:
+    allowed_addresses:
+      - 192.168.0.10
+      - 192.168.123.10
+
+  tasks:
+    # Flush all existing iptables rules to start with a clean state
+    - name: Flush all existing iptables rules
+      ansible.builtin.iptables:
+        chain: "{{ item }}"
+        flush: yes
+      loop:
+        - INPUT
+        - FORWARD
+        - OUTPUT
+
+    # Allow all incoming traffic from the list of allowed addresses
+    - name: Allow all incoming traffic from allowed addresses
+      ansible.builtin.iptables:
+        chain: INPUT
+        source: "{{ item }}"
+        jump: ACCEPT
+        comment: "Allow incoming traffic from allowed addresses"
+      loop: "{{ allowed_addresses }}"
+
+    # Allow traffic for established and related connections
+    - name: Allow established and related connections
+      ansible.builtin.iptables:
+        chain: INPUT
+        match: state
+        state: RELATED,ESTABLISHED
+        jump: ACCEPT
+        comment: "Allow established and related connections"
+
+    # Allow all traffic on the loopback interface
+    - name: Allow loopback interface traffic
+      ansible.builtin.iptables:
+        chain: INPUT
+        in_interface: lo
+        jump: ACCEPT
+        comment: "Allow loopback interface traffic"
+
+    # Drop all other incoming traffic to enhance security
+    - name: Drop all other incoming traffic
+      ansible.builtin.iptables:
+        chain: INPUT
+        jump: DROP
+        comment: "Drop all other incoming traffic for security reasons"
+
+    # Ensure iptables-persistent is installed to make iptables rules persistent across reboots
+    - name: Ensure iptables-persistent is installed
+      ansible.builtin.apt:
+        name: iptables-persistent
+        state: present
+
+    # Save the current iptables rules to the persistent rules file
+    - name: Save the rules to iptables
+      ansible.builtin.shell: "/sbin/iptables-save > /etc/iptables/rules.v4"
+...

@@ -1,0 +1,29 @@
+---
+- name: Flush and save iptables rules
+  hosts: demo
+  become: yes
+
+  tasks:
+    - name: Flush all existing iptables rules
+      ansible.builtin.iptables:
+        chain: "{{ item }}"
+        flush: yes
+      loop:
+        - INPUT
+        - FORWARD
+        - OUTPUT
+
+    - name: Save iptables rules
+      ansible.builtin.command: iptables-save
+      register: iptables_save
+
+    - name: Ensure iptables-persistent is installed
+      ansible.builtin.apt:
+        name: iptables-persistent
+        state: present
+
+    - name: Save the rules to /etc/iptables/rules.v4
+      ansible.builtin.copy:
+        content: "{{ iptables_save.stdout }}"
+        dest: /etc/iptables/rules.v4
+...
