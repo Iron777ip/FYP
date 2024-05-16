@@ -52,12 +52,4 @@
         comment: "Drop all other incoming traffic for security reasons"
 
     # Ensure iptables-persistent is installed to make iptables rules persistent across reboots
-    - name: Ensure iptables-persistent is installed
-      ansible.builtin.apt:
-        name: iptables-persistent
-        state: present
-
-    # Save the current iptables rules to the persistent rules file
-    - name: Save the rules to iptables
-      ansible.builtin.shell: "/sbin/iptables-save > /etc/iptables/rules.v4"
-...
+    - name: Ensure iptables-p
