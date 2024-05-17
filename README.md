@@ -16,4 +16,5 @@ https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html
 Link to Ansible shell module
 https://docs.ansible.com/ansible/latest/collections/ansible/builtin/shell_module.html
 
-
+Link to iptables rules documentation.
+https://help.ubuntu.com/community/IptablesHowTo?action=show&redirect=Iptables
