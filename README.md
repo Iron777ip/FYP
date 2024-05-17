@@ -21,3 +21,6 @@ https://docs.ansible.com/ansible/latest/collections/ansible/builtin/shell_module
 
 Link to iptables rules documentation.
 https://help.ubuntu.com/community/IptablesHowTo?action=show&redirect=Iptables
+
+Link to Ansible valult encription.
+https://docs.ansible.com/ansible/latest/cli/ansible-vault.html

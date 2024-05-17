@@ -1,5 +1,9 @@
+[contol_node]
+ubdesktop@192.168.0.10 ansible_connection=local
+
 [all:vars]
 asnible_become=yes
 ansible_become_pass=Student1
+
 [demo]
 student@192.168.0.117
