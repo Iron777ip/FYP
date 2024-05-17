@@ -4,6 +4,9 @@ Diagram of the network environment.
 ![image](https://github.com/Iron777ip/FYP/assets/124276278/4a77a1d6-14bc-4ac8-8a8f-2acfca2c4973)
 
 
+Link to O'Reilly Ansible integration video tutorial.
+https://learning.oreilly.com/course/dive-into-ansible/9781801076937/
+
 Link to Ansible playbook documentation.
 https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html
 
