@@ -12,6 +12,10 @@
     - name: Flush all existing iptables rules
       ansible.builtin.shell: "iptables -F"
 
+    # Set default policies to drop all incoming traffic
+    - name: Set default policies to drop all incoming traffic
+      ansible.builtin.shell: "iptables -P INPUT DROP"
+
     # Allow all incoming traffic from the list of allowed addresses
     - name: Allow all incoming traffic from allowed addresses
       ansible.builtin.shell: "iptables -A INPUT -s {{ item }} -j ACCEPT"
@@ -21,14 +25,9 @@
     - name: Allow established and related connections
       ansible.builtin.shell: "iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT"
 
-    # Allow traffic from specific IP addresses (instead of loopback interface)
-    - name: Allow traffic from specific IP addresses
-      ansible.builtin.shell: "iptables -A INPUT -s {{ item }} -j ACCEPT"
-      loop: "{{ allowed_addresses }}"
-
-    # Drop all other incoming traffic to enhance security
-    - name: Drop all other incoming traffic
-      ansible.builtin.shell: "iptables -P INPUT DROP"
+    # Allow all traffic on the loopback interface
+    - name: Allow loopback interface traffic
+      ansible.builtin.shell: "iptables -A INPUT -i lo -j ACCEPT"
 
     # Ensure iptables-persistent is installed to make iptables rules persistent across reboots
     - name: Ensure iptables-persistent is installed
