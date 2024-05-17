@@ -1,0 +1,39 @@
+---
+- name: Configure iptables to control SSH and ping based on the host list
+  hosts: demo
+  become: yes
+  vars:
+    allowed_addresses:
+      - 192.168.0.10
+      - 192.168.123.10
+      - 192.168.0.21
+
+  tasks:
+    # Flush all existing iptables rules to start with a clean state
+    - name: Flush all existing iptables rules
+      ansible.builtin.shell: "iptables -F"
+
+    - name: Recive trafic
+      ansible.builtin.shell: "iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT"
+
+    # Allow all incoming traffic using ssh Port(22) from the list of allowed addresses
+    - name: Allow all incoming traffic from allowed addresses
+      ansible.builtin.shell: "iptables -A INPUT -p tcp -s {{ item }} --dport ssh -j ACCEPT"
+      loop: "{{ allowed_addresses }}"
+
+    # Allow ICMP for listed IP addrecess
+    - name: Allow ICMP for listed IP addrecess
+      ansible.builtin.shell: "iptables -A INPUT -p icmp -s {{ item }} -j ACCEPT"
+      loop: "{{ allowed_addresses }}"
+
+    # Drop all shh incoming traffic only lested ip addrecess allowed
+    - name: Drop all tcp incoming trafic
+      ansible.builtin.shell: "iptables -A INPUT -p tcp --dport ssh -j DROP"
+
+    # Drop all ICMP incoming traffic
+    - name: Drop all ICMP incominhg trafic
+      ansible.builtin.shell: "iptables -A INPUT -p icmp -j DROP"
+    # Save the current iptables rules to the persistent rules file
+    - name: Save the rules to iptables
+      ansible.builtin.shell: "/sbin/iptables-save > /etc/iptables/rules.v4"
+...
