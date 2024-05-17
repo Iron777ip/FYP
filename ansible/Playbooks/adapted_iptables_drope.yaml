@@ -27,14 +27,11 @@
         comment: "Allow incoming traffic from allowed addresses"
       loop: "{{ allowed_addresses }}"
 
-    # Allow traffic for established and related connections
+    # Allow established and related connections using shell command
     - name: Allow established and related connections
-      ansible.builtin.iptables:
-        chain: INPUT
-        match: state
-        state: RELATED,ESTABLISHED
-        jump: ACCEPT
-        comment: "Allow established and related connections"
+      ansible.builtin.shell: "iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT"
+      args:
+        warn: false
 
     # Allow all traffic on the loopback interface
     - name: Allow loopback interface traffic
@@ -52,4 +49,12 @@
         comment: "Drop all other incoming traffic for security reasons"
 
     # Ensure iptables-persistent is installed to make iptables rules persistent across reboots
-    - name: Ensure iptables-p
+    - name: Ensure iptables-persistent is installed
+      ansible.builtin.apt:
+        name: iptables-persistent
+        state: present
+
+    # Save the current iptables rules to the persistent rules file
+    - name: Save the rules to iptables
+      ansible.builtin.shell: "/sbin/iptables-save > /etc/iptables/rules.v4"
+...
