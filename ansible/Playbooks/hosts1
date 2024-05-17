@@ -1,9 +1,16 @@
-[contol_node]
+# The [control_node] group contains the control node, which is the machine running Ansible.
+# The 'ansible_connection=local' setting indicates that Ansible should execute tasks locally on this machine.
+[control_node]
 ubdesktop@192.168.0.10 ansible_connection=local
 
+# The [all:vars] section sets variables that apply to all hosts in the inventory.
+# 'ansible_become=yes' means that Ansible should use privilege escalation (sudo) by default.
+# 'ansible_become_pass=Student1' sets the sudo password to 'Student1' for privilege escalation.
 [all:vars]
-asnible_become=yes
+ansible_become=yes
 ansible_become_pass=Student1
 
+# The [demo] group contains the demo hosts. In this case, it includes one host at 192.168.0.117.
+# The connection user is 'student', who will run the Ansible tasks on this host.
 [demo]
 student@192.168.0.117
